@@ -17,7 +17,68 @@
 			border-radius : 5px;
 			background:silver;
 		}
+		
 	</style>
+	<script src="jquery.js" type="text/javascript"></script>
+	<script>
+		$(document).ready(function(){
+			$("#suhu_tetap_tanki").keyup(function(){
+				kal();
+			})
+			$("#tinggi_meja_ukur").keyup(function(){
+				kal();
+			})
+			$("#tinggi_cairan").keyup(function(){
+				kal();
+			})
+			$("#nilai_tot_volume_tinggi1").keyup(function(){
+				kal();
+			})
+			$("#nilai_tot_volume_tinggi2").keyup(function(){
+				kal();
+			})
+			$("#koefisien_muat").keyup(function(){
+				kal();
+			})
+			$("#suhu_cairan").keyup(function(){
+				kal();
+			})
+			$("#density_cairan").keyup(function(){
+				kal();
+			})
+		})
+		function kal() {
+			var suhu_tetap_tanki =$("#suhu_tetap_tanki").val();
+			var tinggi_meja_ukur =$("#tinggi_meja_ukur").val();
+			var tinggi_cairan =$("#tinggi_cairan").val();
+			var nilai_tot_volume_tinggi1 =$("#nilai_tot_volume_tinggi1").val();
+			var nilai_tot_volume_tinggi2 =$("#nilai_tot_volume_tinggi2").val();
+			var koefisien_muat =$("#koefisien_muat").val();
+			var suhu_cairan =$("#suhu_cairan").val();
+			var density_cairan =$("#density_cairan").val();
+			
+			var total = Number(tinggi_meja_ukur) + Number(tinggi_cairan);
+			var last_num = total.toString().split('').pop();
+			var volume_tinggi1 = Math.floor(total/10)*10;
+			var volume_tinggi2 = Math.round(total/10)*10;
+			$("#volume_tinggi1").html(volume_tinggi1);
+			$("#volume_tinggi2").html(volume_tinggi2);
+			
+			var volume_tanki_var_min = (Number(total)-Number(volume_tinggi1))/ 10 * (Number(nilai_tot_volume_tinggi1)-Number(nilai_tot_volume_tinggi2));
+			var volume_tanki_var =Math.abs(volume_tanki_var_min);
+			var volume_tanki_sebelum_suhu = Number(nilai_tot_volume_tinggi1) + Number(volume_tanki_var);
+			var volume_tanki_sebelum_suhu = Math.round(volume_tanki_sebelum_suhu);
+			//alert(volume_tanki_sebelum_suhu);
+			
+			var volume_tanki_sesudah_suhu = Number(volume_tanki_sebelum_suhu)* (1 + (Number(koefisien_muat) * (Number(suhu_cairan)- Number(suhu_tetap_tanki))));
+			var total_volume = Math.floor(Number(volume_tanki_sesudah_suhu) * Number(density_cairan));
+			
+			var n = total_volume.toLocaleString();
+			$("#volume_tanki1").val(n + ' L');
+			$("#volume_tanki2").val(n + ' MT');
+			
+		}
+	</script>
 </head>
 <body>
 	<fieldset style= "background : #ffffff">
@@ -28,17 +89,17 @@
 		<div style= "width : 100%">
 			<label >Suhu tetap tangki (&#x2103;)
 			</label>
-			<input type="text" autocomplete = "off" required style= "width : 100%" value="46"> 
+			<input type="number" id="suhu_tetap_tanki" autocomplete = "off" required style= "width : 100%" value="46"> 
 		</div>
 		<div style= "width : 100%">
 			<label>Tinggi meja ukur (MM)
 			</label>
-			<input type="text" autocomplete = "off" required style= "width : 100%" value="346"> 
+			<input type="number" id="tinggi_meja_ukur" autocomplete = "off" required style= "width : 100%" value="346"> 
 		</div>
 		<div style= "width : 100%">
 			<label>Koefisien Muat tangki
 			</label>
-			<input type="text" autocomplete = "off" required style= "width : 100%" value="0.0000348"> 
+			<input type="number" id="koefisien_muat" autocomplete = "off" required style= "width : 100%" value="0.0000348"> 
 		</div>
 	</fieldset>
 	<fieldset>
@@ -46,25 +107,30 @@
 		<div style= "width : 100%">
 			<label >Suhu Cairan (&#x2103;)
 			</label>
-			<input type="text" autocomplete = "off" required style= "width : 100%" value="55"> 
+			<input type="number" id="suhu_cairan" autocomplete = "off" required style= "width : 100%" value="55"> 
 		</div>
 		<div style= "width : 100%">
 			<label>Tinggi Cairan (MM)
 			</label>
-			<input type="text" autocomplete = "off" required style= "width : 100%" value="9000"> 
+			<input type="number" id="tinggi_cairan" autocomplete = "off" required style= "width : 100%" value="9000"> 
 		</div>
 	</fieldset>
 	<fieldset>
 		<h3>DAFTAR ISI TANGKI UKUR</h3>
 		<div style= "width : 100%">
 			<label >Volume Tinggi (Lt)
-			</label>
-			<input type="text" autocomplete = "off" required style= "width : 100%" value="2.264.085"> 
+			</label><span id="volume_tinggi1"></span>
+			<input type="number" id="nilai_tot_volume_tinggi1" autocomplete = "off" required style= "width : 100%" value="2264085"> 
 		</div>
 		<div style= "width : 100%">
 			<label >Volume Tinggi (Lt)
+			</label><span id="volume_tinggi2"></span>
+			<input type="number" id="nilai_tot_volume_tinggi2" autocomplete = "off" required style= "width : 100%" value="2266488"> 
+		</div>
+		<div style= "width : 100%">
+			<label >Density Cairan
 			</label>
-			<input type="text" autocomplete = "off" required style= "width : 100%" value="2.266.488"> 
+			<input type="number" id="density_cairan" autocomplete = "off" required style= "width : 100%" value="0.9025"> 
 		</div>
 	</fieldset>
 	<fieldset>
@@ -72,10 +138,10 @@
 		<div style= "width : 100%">
 			<label >Volume Tangki
 			</label>
-			<input type="text" autocomplete = "off" readonly style= "width : 100%" value="2.266.237 Liter"> 
+			<input type="text" id="volume_tanki1" autocomplete = "off" readonly style= "width : 100%" value="2.266.237 Liter"> 
 		</div>
 		<div style= "width : 100%">
-			<input type="text" autocomplete = "off" readonly style= "width : 100%" value="2.266.237 MT"> 
+			<input type="text" id="volume_tanki2" autocomplete = "off" readonly style= "width : 100%" value="2.266.237 MT"> 
 		</div>
 	</fieldset>
 </body>
