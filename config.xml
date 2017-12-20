@@ -6,10 +6,10 @@
         id        = "com.richie511.kalibrasi"
         version   = "1.0.0">
 
-    <name>Kalkulator Sounding Darat v1</name>
+    <name>Sounding BC</name>
 
     <description>
-        Kalkulator Sounding Darat v1
+        Sounding BC
     </description>
 
     <author href="http://konsultanprogram.com" email="yugya.17@gmail.com">
