@@ -59,10 +59,26 @@
 			
 			var total = Number(tinggi_meja_ukur) + Number(tinggi_cairan);
 			var last_num = total.toString().split('').pop();
-			var volume_tinggi1 = Math.floor(total/10)*10;
-			var volume_tinggi2 = Math.round(total/10)*10;
-			$("#volume_tinggi1").html(volume_tinggi1);
-			$("#volume_tinggi2").html(volume_tinggi2);
+			
+			var tesv = Math.floor(total/10)*10;
+			var volume_tinggi1 = Math.round(total/10)*10;
+			
+			if (last_num <= 5) {
+				var volume_tinggi2 = Number(tesv) + 10;
+				$("#volume_tinggi1").html(volume_tinggi1);
+				$("#volume_tinggi2").html(volume_tinggi2);
+			}
+			else {
+				var volume_tinggi2 = Math.floor(total/10)*10;
+				$("#volume_tinggi1").html(volume_tinggi2);
+				$("#volume_tinggi2").html(volume_tinggi1);
+			}
+			
+			
+			function addCommas(intNum) {
+			  return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+			}
+			
 			
 			var volume_tanki_var_min = (Number(total)-Number(volume_tinggi1))/ 10 * (Number(nilai_tot_volume_tinggi1)-Number(nilai_tot_volume_tinggi2));
 			var volume_tanki_var =Math.abs(volume_tanki_var_min);
@@ -73,7 +89,8 @@
 			var volume_tanki_sesudah_suhu = Number(volume_tanki_sebelum_suhu)* (1 + (Number(koefisien_muat) * (Number(suhu_cairan)- Number(suhu_tetap_tanki))));
 			var total_volume = Math.floor(Number(volume_tanki_sesudah_suhu) * Number(density_cairan));
 			
-			var n = total_volume.toLocaleString();
+			//var n = total_volume.toLocaleString('en');
+			var n = addCommas(total_volume);
 			$("#volume_tanki1").val(n + ' L');
 			$("#volume_tanki2").val(n + ' MT');
 			
