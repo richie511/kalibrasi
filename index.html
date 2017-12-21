@@ -59,16 +59,16 @@
 			
 			var total = Number(tinggi_meja_ukur) + Number(tinggi_cairan);
 			var last_num = total.toString().split('').pop();
-			
 			var tesv = Math.floor(total/10)*10;
-			var volume_tinggi1 = Math.round(total/10)*10;
 			
 			if (last_num <= 5) {
 				var volume_tinggi2 = Number(tesv) + 10;
+				var volume_tinggi1 = Number(tesv);
 				$("#volume_tinggi1").html(volume_tinggi1);
 				$("#volume_tinggi2").html(volume_tinggi2);
 			}
 			else {
+				var volume_tinggi1 = Math.round(total/10)*10;
 				var volume_tinggi2 = Math.floor(total/10)*10;
 				$("#volume_tinggi1").html(volume_tinggi2);
 				$("#volume_tinggi2").html(volume_tinggi1);
@@ -100,7 +100,7 @@
 <body bgcolor="grey">
 	<fieldset style= "color : #ffffff;background:url('StorageTank.jpg');background-size:cover;padding:20px">
 		<div style="text-align:right;top:0px;">
-			<div>Sounding KPPBC</div>
+			<div>Kalkulator Sounding <br>Tanki Darat - Laut</div>
 			<img src="logo.png" width="20%">
 		</div>
 		
