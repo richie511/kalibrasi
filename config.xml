@@ -6,10 +6,10 @@
         id        = "com.richie511.kalibrasi"
         version   = "1.0.0">
 
-    <name>Sounding BC</name>
+    <name>Kalkulator Sounding</name>
 
     <description>
-        Sounding BC
+        Kalkulator Sounding
     </description>
 
     <author href="http://konsultanprogram.com" email="yugya.17@gmail.com">
