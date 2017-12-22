@@ -35,6 +35,9 @@
 	</style>
 	<script src="jquery.js" type="text/javascript"></script>
 	<script>
+		window.onload = function as(){
+			$("#sounding_laut_hal").hide();
+		}
 		$(document).ready(function(){
 			$("#suhu_tetap_tanki").keyup(function(){
 				kal();
@@ -103,12 +106,15 @@
 				var volume_tinggi1 = Number(tesv);
 				$("#volume_tinggi1").html(volume_tinggi1);
 				$("#volume_tinggi2").html(volume_tinggi2);
+				//alert(volume_tinggi1);
+				var volume_tanki_var_min = (Number(total)-Number(volume_tinggi1))/ 10 * (Number(nilai_tot_volume_tinggi1)-Number(nilai_tot_volume_tinggi2));
 			}
 			else {
 				var volume_tinggi1 = Math.round(total/10)*10;
 				var volume_tinggi2 = Math.floor(total/10)*10;
 				$("#volume_tinggi1").html(volume_tinggi2);
 				$("#volume_tinggi2").html(volume_tinggi1);
+				var volume_tanki_var_min = (Number(total)-Number(volume_tinggi2))/ 10 * (Number(nilai_tot_volume_tinggi1)-Number(nilai_tot_volume_tinggi2));
 			}
 			
 			
@@ -117,11 +123,11 @@
 			}
 			
 			
-			var volume_tanki_var_min = (Number(total)-Number(volume_tinggi1))/ 10 * (Number(nilai_tot_volume_tinggi1)-Number(nilai_tot_volume_tinggi2));
+			
 			var volume_tanki_var =Math.abs(volume_tanki_var_min);
 			var volume_tanki_sebelum_suhu = Number(nilai_tot_volume_tinggi1) + Number(volume_tanki_var);
 			var volume_tanki_sebelum_suhu = Math.round(volume_tanki_sebelum_suhu);
-			//alert(volume_tanki_sebelum_suhu);
+			
 			
 			var volume_tanki_sesudah_suhu = Number(volume_tanki_sebelum_suhu)* (1 + (Number(koefisien_muat) * (Number(suhu_cairan)- Number(suhu_tetap_tanki))));
 			var total_volume = Math.floor(Number(volume_tanki_sesudah_suhu) * Number(density_cairan));
@@ -149,12 +155,14 @@
 				var volume_tinggi_laut1 = Number(tesv);
 				$("#volume_tinggi_laut1").html(volume_tinggi_laut1);
 				$("#volume_tinggi_laut2").html(volume_tinggi_laut2);
+				var volume_tanki_laut_var_min_laut = (Number(tinggi_cairan_laut) - Number(nilai_tot_volume_tinggi_laut1)/10 )* (Number(nilai_tot_volume_tinggi_laut2)-Number(nilai_tot_volume_tinggi_laut1));
 			}
 			else {
 				var volume_tinggi_laut1 = Math.round(total_laut/10)*10;
 				var volume_tinggi_laut2 = Math.floor(total_laut/10)*10;
 				$("#volume_tinggi_laut1").html(volume_tinggi_laut2);
 				$("#volume_tinggi_laut2").html(volume_tinggi_laut1);
+				var volume_tanki_laut_var_min_laut = (Number(tinggi_cairan_laut) - Number(nilai_tot_volume_tinggi_laut1)/10 )* (Number(nilai_tot_volume_tinggi_laut2)-Number(nilai_tot_volume_tinggi_laut1));
 			}
 			
 			
@@ -162,15 +170,15 @@
 			  return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
 			}
 			
-			
-			var volume_tanki_laut_var_min_laut = (Number(total_laut)-Number(volume_tinggi_laut1))/ 10 * (Number(nilai_tot_volume_tinggi_laut1)-Number(nilai_tot_volume_tinggi_laut2));
+			/*
 			var volume_tanki_laut_var =Math.abs(volume_tanki_laut_var_min_laut);
 			var volume_tanki_sebelum_suhu_laut = Number(nilai_tot_volume_tinggi_laut1) + Number(volume_tanki_laut_var);
 			var volume_tanki_sebelum_suhu_laut = Math.round(volume_tanki_sebelum_suhu_laut);
 			//alert(volume_tanki_sebelum_suhu_laut);
 			
 			var volume_tanki_sesudah_suhu_laut = Number(volume_tanki_sebelum_suhu_laut)* (1 + (Number(koefisien_muat) * (Number(suhu_cairan)- Number(suhu_tetap_tanki))));
-			var total_laut_volume_laut = Math.floor(Number(volume_tanki_sesudah_suhu_laut) * Number(density_cairan_laut));
+			*/
+			var total_laut_volume_laut = Math.floor(Number(volume_tanki_laut_var_min_laut) * Number(density_cairan_laut));
 			
 			//var n = total_laut_volume_laut.toLocaleString('en');
 			var n = addCommas_laut(total_laut_volume_laut);
