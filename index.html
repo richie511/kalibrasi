@@ -17,7 +17,21 @@
 			border-radius : 5px;
 			background:silver;
 		}
-		
+		.pilihan {
+			float:left;width:48%;text-align:center;
+			padding-top:10px;
+			padding-bottom:10px;
+			background : #06117B;
+			border-radius : 5px;
+			margin-right:5px;
+			margin-top:10px;
+			cursor:pointer;
+		}
+		.pilihan:hover {
+			background : #E3E4F3;
+			color : #1A4C4E;
+			
+		}
 	</style>
 	<script src="jquery.js" type="text/javascript"></script>
 	<script>
@@ -45,6 +59,29 @@
 			})
 			$("#density_cairan").keyup(function(){
 				kal();
+			})
+			$("#tinggi_cairan_laut").keyup(function(){
+				kal_laut();
+			})
+			$("#nilai_tot_volume_tinggi_laut1").keyup(function(){
+				kal_laut();
+			})
+			$("#nilai_tot_volume_tinggi_laut2").keyup(function(){
+				kal_laut();
+			})
+			$("#suhu_cairan_laut").keyup(function(){
+				kal_laut();
+			})
+			$("#density_cairan_laut").keyup(function(){
+				kal_laut();
+			})
+			$("#sounding_darat").click(function(){
+				$("#sounding_darat_hal").show(1000);
+				$("#sounding_laut_hal").hide(1000);
+			})
+			$("#sounding_laut").click(function(){
+				$("#sounding_laut_hal").show(1000);
+				$("#sounding_darat_hal").hide(1000);
 			})
 		})
 		function kal() {
@@ -95,16 +132,66 @@
 			$("#volume_tanki2").val(n + ' MT');
 			
 		}
+		
+		function kal_laut() {
+			var suhu_cairan_laut =$("#suhu_cairan_laut").val();
+			var tinggi_cairan_laut =$("#tinggi_cairan_laut").val();
+			var nilai_tot_volume_tinggi_laut1 =$("#nilai_tot_volume_tinggi_laut1").val();
+			var nilai_tot_volume_tinggi_laut2 =$("#nilai_tot_volume_tinggi_laut2").val();
+			var density_cairan_laut =$("#density_cairan_laut").val();
+			
+			var total_laut = Number(tinggi_cairan_laut);
+			var last_num_laut = total_laut.toString().split('').pop();
+			var tesv = Math.floor(total_laut/10)*10;
+			
+			if (last_num_laut <= 5) {
+				var volume_tinggi_laut2 = Number(tesv) + 10;
+				var volume_tinggi_laut1 = Number(tesv);
+				$("#volume_tinggi_laut1").html(volume_tinggi_laut1);
+				$("#volume_tinggi_laut2").html(volume_tinggi_laut2);
+			}
+			else {
+				var volume_tinggi_laut1 = Math.round(total_laut/10)*10;
+				var volume_tinggi_laut2 = Math.floor(total_laut/10)*10;
+				$("#volume_tinggi_laut1").html(volume_tinggi_laut2);
+				$("#volume_tinggi_laut2").html(volume_tinggi_laut1);
+			}
+			
+			
+			function addCommas_laut(intNum) {
+			  return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+			}
+			
+			
+			var volume_tanki_laut_var_min_laut = (Number(total_laut)-Number(volume_tinggi_laut1))/ 10 * (Number(nilai_tot_volume_tinggi_laut1)-Number(nilai_tot_volume_tinggi_laut2));
+			var volume_tanki_laut_var =Math.abs(volume_tanki_laut_var_min_laut);
+			var volume_tanki_sebelum_suhu_laut = Number(nilai_tot_volume_tinggi_laut1) + Number(volume_tanki_laut_var);
+			var volume_tanki_sebelum_suhu_laut = Math.round(volume_tanki_sebelum_suhu_laut);
+			//alert(volume_tanki_sebelum_suhu_laut);
+			
+			var volume_tanki_sesudah_suhu_laut = Number(volume_tanki_sebelum_suhu_laut)* (1 + (Number(koefisien_muat) * (Number(suhu_cairan)- Number(suhu_tetap_tanki))));
+			var total_laut_volume_laut = Math.floor(Number(volume_tanki_sesudah_suhu_laut) * Number(density_cairan_laut));
+			
+			//var n = total_laut_volume_laut.toLocaleString('en');
+			var n = addCommas_laut(total_laut_volume_laut);
+			$("#volume_tanki1").val(n + ' L');
+			$("#volume_tanki2").val(n + ' MT');
+			
+		}
 	</script>
 </head>
 <body bgcolor="grey">
 	<fieldset style= "color : #ffffff;background:url('StorageTank.jpg');background-size:cover;padding:20px">
 		<div style="text-align:right;top:0px;">
-			<div>Kalkulator Sounding <br>Tanki Darat - Laut</div>
+			<div>Kalkulator Sounding <br>Tangki Darat - Laut</div>
 			<img src="logo.png" width="20%">
 		</div>
-		
+		<div >
+			<div id="sounding_darat" class="pilihan">Sounding Darat</div> 
+			<div id="sounding_laut" class="pilihan">Sounding Laut</div>
+		</div>
 	</fieldset>
+	<div id="sounding_darat_hal">
 	<fieldset>
 		<h3>PEMERIKSAAN TANGKI DARAT</h3>
 		<div style= "width : 100%">
@@ -171,5 +258,59 @@
 		</div>
 		
 	</fieldset>
+	</div>
+	<div id="sounding_laut_hal">
+	<fieldset>
+		<h3>PEMERIKSAAN TANGKI LAUT</h3>
+	</fieldset>
+	<fieldset>
+		<h3>HASIL PEMERIKSAAN FISIK</h3>
+		<div style= "width : 100%">
+			<label >Suhu Cairan (&#x2103;)
+			</label>
+			<input type="number" id="suhu_cairan_laut" autocomplete = "off" required style= "width : 100%" value="55"> 
+		</div>
+		<div style= "width : 100%">
+			<label>Tinggi Cairan (MM)
+			</label>
+			<input type="number" id="tinggi_cairan_laut" autocomplete = "off" required style= "width : 100%" value=""> 
+		</div>
+	</fieldset>
+	<fieldset>
+		<h3>DAFTAR ISI TANGKI UKUR</h3>
+		<div style= "width : 100%">
+			<label >Volume Tinggi (Lt)
+			</label><span id="volume_tinggi_laut1"></span>
+			<input type="number" id="nilai_tot_volume_tinggi_laut1" autocomplete = "off" required style= "width : 100%" value=""> 
+		</div>
+		<div style= "width : 100%">
+			<label >Volume Tinggi (Lt)
+			</label><span id="volume_tinggi_laut2"></span>
+			<input type="number" id="nilai_tot_volume_tinggi_laut2" autocomplete = "off" required style= "width : 100%" value=""> 
+		</div>
+		<div style= "width : 100%">
+			<label >Density Cairan
+			</label>
+			<input type="number" id="density_cairan_laut" autocomplete = "off" required style= "width : 100%" value=""> 
+		</div>
+	</fieldset>
+	<fieldset>
+		<h3>HASIL AKHIR</h3>
+		<div style= "width : 100%">
+			<label >Volume Tangki
+			</label>
+			<input type="text" id="volume_tanki_laut1" autocomplete = "off" readonly style= "width : 100%" value=""> 
+		</div>
+		<div style= "width : 100%">
+			<input type="text" id="volume_tanki_laut2" autocomplete = "off" readonly style= "width : 100%" value=""> 
+		</div>
+	</fieldset>
+	<fieldset style= "color : #ffffff;background:url('StorageTank.jpg');background-size:cover;padding:20px">
+		<div style="text-align:right;top:0px;font-size:8pt;">
+			<div>Developed by : Karya Tiasa Anugerah</div>
+		</div>
+		
+	</fieldset>
+	</div>
 </body>
 </html>
