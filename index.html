@@ -18,7 +18,7 @@
 			background:silver;
 		}
 		.pilihan {
-			float:left;width:48%;text-align:center;
+			float:left;width:100%;text-align:center;
 			padding-top:10px;
 			padding-bottom:10px;
 			background : #06117B;
@@ -36,7 +36,61 @@
 	<script src="jquery.js" type="text/javascript"></script>
 	<script>
 		window.onload = function as(){
-			$("#sounding_laut_hal").hide();
+			//$("#kirim_data").hide();
+			$("#kirim_data").prop("disabled", true);
+		}
+		function cek_sounding(){
+			var NoSounding = $("#NoSounding").val();
+			$("#kirim_data").prop("disabled", false);
+			$.ajax({
+				cache : false,
+				type : "GET",
+				url  : "http://localhost/sounding/data_sounding.php",
+				dataType : 'json',
+				data : "NoSounding="+NoSounding,
+				success : function(data){
+					
+					$("#NamaPerusahaan").val(data.NamaPerusahaan);
+					$("#Alamat").val(data.Alamat);
+					$("#Tangki").val(data.Tangki);
+					$("#kirim_data").prop("disabled", false);
+				},
+				error : function (err){
+					$("#kirim_data").prop("disabled", true);
+				}
+			})
+		}
+		function kirim_data(){
+			var NoSounding = $("#NoSounding").val();
+			var suhu_tetap_tanki = $("#suhu_tetap_tanki").val();
+			var tinggi_meja_ukur = $("#tinggi_meja_ukur").val();
+			var tinggi_cairan = $("#tinggi_cairan").val();
+			var nilai_tot_volume_tinggi1= $("#nilai_tot_volume_tinggi1").val();
+			var nilai_tot_volume_tinggi2= $("#nilai_tot_volume_tinggi2").val();
+			var koefisien_muat =$("#koefisien_muat").val();
+			var suhu_cairan=$("#suhu_cairan").val();
+			var density_cairan=$("#density_cairan").val();
+			var volume_tanki2=$("#volume_tanki2").val();
+			var drpt=$("#drpt").val();
+			$.ajax({
+				cache : false,
+				type : "POST",
+				url  : "http://localhost/sounding/kirim_sounding.php",
+				//dataType : 'json',
+				data : "NoSounding="+NoSounding+"&suhu_tetap_tanki="+suhu_tetap_tanki+"&tinggi_meja_ukur="+tinggi_meja_ukur+"&tinggi_cairan="+tinggi_cairan+"&nilai_tot_volume_tinggi1="+nilai_tot_volume_tinggi1+"&nilai_tot_volume_tinggi2="+nilai_tot_volume_tinggi2+"&koefisien_muat="+koefisien_muat+"&suhu_cairan="+suhu_cairan+"&density_cairan="+suhu_tetap_tanki+"&volume_tanki2="+volume_tanki2+"&drpt="+drpt,
+				success : function(data){
+					$("#NoSounding").val("");
+					$("#NamaPerusahaan").val("");
+					$("#Alamat").val("");
+					$("#Tangki").val("");
+					$("#volume_tanki2").val("");
+					$("#drpt").val("");
+					alert('Sounding telah dikirim.');
+				},
+				error : function (data){
+					$("#kirim_data").prop("disabled", true);
+				}
+			})
 		}
 		$(document).ready(function(){
 			$("#suhu_tetap_tanki").keyup(function(){
@@ -77,14 +131,6 @@
 			})
 			$("#density_cairan_laut").keyup(function(){
 				kal_laut();
-			})
-			$("#sounding_darat").click(function(){
-				$("#sounding_darat_hal").show(300);
-				$("#sounding_laut_hal").hide(300);
-			})
-			$("#sounding_laut").click(function(){
-				$("#sounding_laut_hal").show(300);
-				$("#sounding_darat_hal").hide(300);
 			})
 		})
 		function kal() {
@@ -134,11 +180,16 @@
 			
 			//var n = total_volume.toLocaleString('en');
 			var n = addCommas(total_volume);
+			$("#volume_asli").val(n);
 			$("#volume_tanki1").val(n + ' L');
 			$("#volume_tanki2").val(n + ' MT');
 			
 		}
-		
+		function format_drpt(){
+			var t = $("#drpt").val();
+			var g = addCommas(t);
+			$("#drpt").val(g);
+		}
 		function kal_laut() {
 			var suhu_cairan_laut =$("#suhu_cairan_laut").val();
 			var tinggi_cairan_laut =$("#tinggi_cairan_laut").val();
@@ -189,17 +240,39 @@
 	</script>
 </head>
 <body bgcolor="grey">
-	<fieldset style= "color : #ffffff;background:url('gbrkantor.jpg');background-size:cover;padding:20px">
+	<fieldset style= "color : #ffffff;background:url('StorageTank.jpg');background-size:cover;padding:20px">
 		<div style="text-align:right;top:0px;">
-			<div>Kalkulator Sounding <br>Tangki Darat - Laut</div>
+			<div>Kalkulator Sounding <br>Tangki Darat</div>
 			<img src="logo.png" width="20%">
 		</div>
 		<div >
-			<div id="sounding_darat" class="pilihan">Sounding Darat</div> 
-			<div id="sounding_laut" class="pilihan">Sounding Laut</div>
+			<div id="sounding_darat" class="pilihan">Tangki Penyimpanan CPO</div> 
 		</div>
 	</fieldset>
 	<div id="sounding_darat_hal">
+	<fieldset>
+		<h3>DETAIL SOUNDING</h3>
+		<div style= "width : 100%">
+			<label for="NoSounding">No.Sounding
+			</label>
+			<input type="number" id="NoSounding" onkeyup="cek_sounding()" autocomplete = "off" required style= "width : 100%" placeholder="No.Sounding"> 
+		</div>
+		<div style= "width : 100%">
+			<label for="NamaPerusahaan">Nama Perusahaan
+			</label>
+			<input type="text" id="NamaPerusahaan" autocomplete = "off" required style= "width : 100%" placeholder="Nama Perusahaan"> 
+		</div>
+		<div style= "width : 100%">
+			<label for="Alamat">Alamat
+			</label>
+			<input type="text" id="Alamat" autocomplete = "off" required style= "width : 100%" placeholder="Alamat"> 
+		</div>
+		<div style= "width : 100%">
+			<label for="text">Nama Tangki
+			</label>
+			<input type="text" id="Tangki" autocomplete = "off" required style= "width : 100%" placeholder="Nama Tangki"> 
+		</div>
+	</fieldset>
 	<fieldset>
 		<h3>PEMERIKSAAN TANGKI DARAT</h3>
 		<div style= "width : 100%">
@@ -252,77 +325,24 @@
 	<fieldset>
 		<h3>HASIL AKHIR</h3>
 		<div style= "width : 100%">
-			<label >Volume Tangki
-			</label>
-			<input type="text" id="volume_tanki1" autocomplete = "off" readonly style= "width : 100%" value="2.266.237 Liter"> 
-		</div>
-		<div style= "width : 100%">
-			<input type="text" id="volume_tanki2" autocomplete = "off" readonly style= "width : 100%" value="2.266.237 MT"> 
+			<input type="text" id="volume_tanki2" autocomplete = "off" readonly style= "width : 100%" > 
 		</div>
 	</fieldset>
-	<fieldset style= "color : #ffffff;background:url('gbrkantor.jpg');background-size:cover;padding:20px">
-		<div style="text-align:right;top:0px;font-size:12pt;">
-			<div>Developed : BC DUMAI</div>
+	<fieldset>
+		<h3>Dari Perusahaan</h3>
+		<div style= "width : 100%">
+			<input type="text" id="drpt" onkeyup="format_drpt()" autocomplete = "off" style= "width : 100%" value=""> 
 		</div>
+	</fieldset>
+	<div >
+			<input  type="submit" id="kirim_data" onclick="kirim_data()" class="pilihan"  value="Kirim data" style= "color : #ffffff;"> 
+		</div>
+	<fieldset style= "color : #ffffff;background:url('StorageTank.jpg');background-size:cover;padding:20px">
 		<div style="text-align:right;top:0px;font-size:8pt;">
-			<div>By : KTA</div>
 		</div>
+		
 	</fieldset>
 	</div>
-	<div id="sounding_laut_hal">
-	<fieldset>
-		<h3>PEMERIKSAAN TANGKI LAUT</h3>
-	</fieldset>
-	<fieldset>
-		<h3>HASIL PEMERIKSAAN FISIK</h3>
-		<div style= "width : 100%">
-			<label >Suhu Cairan (&#x2103;)
-			</label>
-			<input type="number" id="suhu_cairan_laut" autocomplete = "off" required style= "width : 100%" value="55"> 
-		</div>
-		<div style= "width : 100%">
-			<label>Tinggi Cairan (MM)
-			</label>
-			<input type="number" id="tinggi_cairan_laut" autocomplete = "off" required style= "width : 100%" value=""> 
-		</div>
-	</fieldset>
-	<fieldset>
-		<h3>DAFTAR ISI TANGKI UKUR</h3>
-		<div style= "width : 100%">
-			<label >Volume Tinggi (Lt)
-			</label><span id="volume_tinggi_laut1"></span>
-			<input type="number" id="nilai_tot_volume_tinggi_laut1" autocomplete = "off" required style= "width : 100%" value=""> 
-		</div>
-		<div style= "width : 100%">
-			<label >Volume Tinggi (Lt)
-			</label><span id="volume_tinggi_laut2"></span>
-			<input type="number" id="nilai_tot_volume_tinggi_laut2" autocomplete = "off" required style= "width : 100%" value=""> 
-		</div>
-		<div style= "width : 100%">
-			<label >Density Cairan
-			</label>
-			<input type="number" id="density_cairan_laut" autocomplete = "off" required style= "width : 100%" value=""> 
-		</div>
-	</fieldset>
-	<fieldset>
-		<h3>HASIL AKHIR</h3>
-		<div style= "width : 100%">
-			<label >Volume Tangki
-			</label>
-			<input type="text" id="volume_tanki_laut1" autocomplete = "off" readonly style= "width : 100%" value=""> 
-		</div>
-		<div style= "width : 100%">
-			<input type="text" id="volume_tanki_laut2" autocomplete = "off" readonly style= "width : 100%" value=""> 
-		</div>
-	</fieldset>
-	<fieldset style= "color : #ffffff;background:url('gbrkantor.jpg');background-size:cover;padding:20px">
-		<div style="text-align:right;top:0px;font-size:12pt;">
-			<div>Developed : BC DUMAI</div>
-		</div>
-		<div style="text-align:right;top:0px;font-size:8pt;">
-			<div>By : KTA</div>
-		</div>
-	</fieldset>
-	</div>
+	
 </body>
 </html>
