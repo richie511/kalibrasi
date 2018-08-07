@@ -6,7 +6,7 @@
 			font-family : arial;
 			font-weight : bold;
 		}
-		input {
+		input,select {
 			border-radius : 5px;
 			height : 45px;
 			font-family : arial;
@@ -38,6 +38,20 @@
 		window.onload = function as(){
 			//$("#kirim_data").hide();
 			$("#kirim_data").prop("disabled", true);
+			$.ajax({
+				cache : false,
+				type : "GET",
+				url  : "http://soundingtangki.com/sounding/pilih_sounding.php",
+				success : function(data){
+					
+					$("#NoSounding").html(data);
+					$("#kirim_data").prop("disabled", false);
+				},
+				error : function (err){
+					$("#kirim_data").prop("disabled", true);
+					alert()
+				}
+			})
 		}
 		function cek_sounding(){
 			var NoSounding = $("#NoSounding").val();
@@ -255,7 +269,9 @@
 		<div style= "width : 100%">
 			<label for="NoSounding">No.Sounding
 			</label>
-			<input type="number" id="NoSounding" onkeyup="cek_sounding()" autocomplete = "off" required style= "width : 100%" placeholder="No.Sounding"> 
+			<select id="NoSounding" onchange="cek_sounding()" autocomplete = "off" style= "width : 100%;padding:10px;" > 
+
+			</select>
 		</div>
 		<div style= "width : 100%">
 			<label for="NamaPerusahaan">Nama Perusahaan
